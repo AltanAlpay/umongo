@@ -157,10 +157,11 @@ class BaseDataProxy:
         for name, field in self._fields.items():
             mongo_name = field.attribute or name
             if mongo_name not in self._data:
-                if callable(field.missing):
-                    self._data[mongo_name] = field.missing()
-                else:
-                    self._data[mongo_name] = field.missing
+                if hasattr(field, "missing"):
+                    if callable(field.missing):
+                        self._data[mongo_name] = field.missing()
+                    else:
+                        self._data[mongo_name] = field.missing
 
     def required_validate(self):
         errors = {}
