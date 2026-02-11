@@ -2,27 +2,37 @@
 Releasing μMongo
 ================
 
-Prerequisites
--------------
-
-- Install bumpversion_. The easiest way is to create and activate a virtualenv,
-  and then run ``pip install -r requirements_dev.txt``.
-
 Steps
 -----
 
-#. Add an entry to ``HISTORY.rst``, or update the ``Unreleased`` entry, with the
+#. Add an entry to ``CHANGELOG.rst``, or update the ``Unreleased`` entry, with the
    new version and the date of release. Include any bug fixes, features, or
    backwards incompatibilities included in this release.
-#. Commit the changes to ``HISTORY.rst``.
-#. Run bumpversion_ to update the version string in ``umongo/__init__.py`` and
-   ``setup.py``.
 
-   * You can combine this step and the previous one by using the ``--allow-dirty``
-     flag when running bumpversion_ to make a single release commit.
+#. Commit the changes to ``CHANGELOG.rst``.
 
-#. Run ``git push`` to push the release commits to github.
-#. Once the CI tests pass, run ``git push --tags`` to push the tag to github and
-   trigger the release to pypi.
+    $ git add CHANGELOG.rst
+    $ git commit -m "Update CHANGELOG.rst"
 
-.. _bumpversion: https://pypi.org/project/bumpversion/
+#. Update ``messages.pot`` file using ``extract`` command and manual edition.
+
+    $ pybabel extract  -o messages.pot . --project=umongo --copyright-holder="Scille SAS and contributors"
+
+#. Update .po and .mo files.
+
+    $ pybabel update -d examples/flask/translations/ -i messages.pot
+    $ pybabel compile -d examples/flask/translations/
+
+#. Update version number in ``pyproject.toml`` then commit.
+
+    $ git add pyproject.toml
+    $ git commit -m "Bump version"
+
+#. Create the new version tag (replace with actual version).
+
+    $ git tag x.y.z
+
+#. Push the release commits and tag.
+
+    $ git push
+    $ git push origin x.y.z

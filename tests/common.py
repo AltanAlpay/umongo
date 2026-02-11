@@ -1,12 +1,11 @@
 import pymongo
 
-from umongo.document import DocumentImplementation
-from umongo.instance import Instance
 from umongo.builder import BaseBuilder
+from umongo.document import DocumentImplementation
 from umongo.frameworks import register_instance
+from umongo.instance import Instance
 
-
-TEST_DB = 'umongo_test'
+TEST_DB = "umongo_test"
 
 
 # Use a sync driver for easily drop the test database
@@ -16,22 +15,23 @@ con = pymongo.MongoClient()
 # Provide mocked database, collection and builder for easier testing
 
 
-class MockedCollection():
-
+class MockedCollection:
     def __init__(self, db, name):
         self.db = db
         self.name = name
 
     def __eq__(self, other):
-        return (isinstance(other, MockedCollection) and
-                self.db == other.db and self.name == other.name)
+        return (
+            isinstance(other, MockedCollection)
+            and self.db == other.db
+            and self.name == other.name
+        )
 
     def __repr__(self):
-        return "<%s db=%s, name=%s>" % (self.__class__.__name__, self.db, self.name)
+        return f"<{self.__class__.__name__} db={self.db}, name={self.name}>"
 
 
 class MockedDB:
-
     def __init__(self, name):
         self.name = name
         self.cols = {}
@@ -50,11 +50,10 @@ class MockedDB:
         return isinstance(other, MockedDB) and self.name == other.name
 
     def __repr__(self):
-        return "<%s name=%s>" % (self.__class__.__name__, self.name)
+        return f"<{self.__class__.__name__} name={self.name}>"
 
 
 class MockedBuilder(BaseBuilder):
-
     BASE_DOCUMENT_CLS = DocumentImplementation
 
 
@@ -70,14 +69,12 @@ register_instance(MockedInstance)
 
 
 class BaseTest:
-
-    def setup(self):
-        self.instance = MockedInstance(MockedDB('my_moked_db'))
+    def setup_method(self):
+        self.instance = MockedInstance(MockedDB("my_moked_db"))
 
 
 class BaseDBTest:
-
-    def setup(self):
+    def setup_method(self):
         con.drop_database(TEST_DB)
 
 

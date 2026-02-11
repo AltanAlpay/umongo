@@ -35,8 +35,7 @@ Python dict example
     >>> {"str_field": "hello world", "int_field": 42, "date_field": datetime(2015, 1, 1)}
 
 To be integrated into μMongo, those data need to be deserialized and to leave
-μMongo they need to be serialized (under the hood μMongo uses
-`marshmallow <http://marshmallow.readthedocs.org/>`_ schema).
+μMongo they need to be serialized (under the hood μMongo uses `marshmallow`_ schemas).
 
 The deserialization operation is done automatically when instantiating a
 :class:`umongo.Document`. The serialization is done when calling
@@ -489,8 +488,7 @@ for a working example of i18n with `flask-babel <https://pythonhosted.org/Flask-
 Marshmallow integration
 =======================
 
-Under the hood, μMongo heavily uses `marshmallow <http://marshmallow.readthedocs.org>`_
-for all its data validation work.
+Under the hood, μMongo heavily uses `marshmallow`_ for all its data validation work.
 
 However an ODM has some special needs (i.g. handling ``required`` fields through MongoDB's
 unique indexes) that force to extend marshmallow base types.
@@ -618,16 +616,16 @@ using pure marshmallow fields generated with the
   So when you use ``as_marshmallow_field``, the resulting marshmallow field's
   ``missing``&``default`` will be by default both infered from the umongo's
   ``default`` field. You can overwrite this behavior by using
-  ``marshmallow_missing``/``marshmallow_default`` attributes:
+  ``marshmallow_load_default``/``marshmallow_dump_default`` attributes:
 
 .. code-block:: python
 
     @instance.register
     class Employee(Document):
         name = fields.StrField(default='John Doe')
-        birthday = fields.DateTimeField(marshmallow_missing=dt.datetime(2000, 1, 1))
+        birthday = fields.DateTimeField(marshmallow_load_default=dt.datetime(2000, 1, 1))
         # You can use `missing` singleton to overwrite `default` field inference
-        skill = fields.StrField(default='Dummy', marshmallow_default=missing)
+        skill = fields.StrField(default='Dummy', marshmallow_dump_default=missing)
 
     ret = Employee.schema.as_marshmallow_schema()().load({})
     assert ret == {'name': 'John Doe', 'birthday': datetime(2000, 1, 1, 0, 0, tzinfo=tzutc()), 'skill': 'Dummy'}
@@ -725,3 +723,6 @@ wrapped by :class:`asyncio.coroutine` and called with ``yield from``.
 
 .. warning:: When converting to marshmallow with `as_marshmallow_schema` and
     `as_marshmallow_fields`, `io_validate` attribute will not be preserved.
+
+
+.. _marshmallow: <http://marshmallow.readthedocs.org/>
